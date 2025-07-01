@@ -31,9 +31,11 @@ def RSI(
         up[up < 0] = 0
         down[down > 0] = 0
 
+        down = down.abs()
+
         # EMAs of ups and downs
-        _gain = up.ewm(alpha=1.0 / period, adjust=adjust).mean()
-        _loss = down.abs().ewm(alpha=1.0 / period, adjust=adjust).mean()
+        _gain = up.rolling(period).mean()
+        _loss = down.rolling(period).mean()
 
         RS = _gain / _loss
         return pd.Series(100 - (100 / (1 + RS)), name="{0} period RSI".format(period))
